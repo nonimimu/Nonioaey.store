@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Characters</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; background: #f0f9ff; color: #0369a1; }
+        .glass { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); border: 2px solid white; border-radius: 30px; }
+        
+        /* ลูกเล่นตอนลบรูป (ฟองอากาศสลาย) */
+        .fade-bubble { animation: fadeBubble 0.8s forwards; pointer-events: none; }
+        @keyframes fadeBubble {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5) translateY(-50px); opacity: 0; filter: blur(4px); }
+        }
+
+        /* ช่องอัปโหลดทรงหัวใจ */
+        .heart-upload {
+            width: 120px; height: 120px; background: white;
+            clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; border: 2px dashed #0EA5E9;
+        }
+        .heart-upload:hover { transform: scale(1.1); background: #e0f2fe; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-bold text-sky-600">จัดการรูปตัวละคร ✨</h1>
+            <button onclick="location.href='index.html'" class="text-sm font-bold text-sky-400 hover:text-sky-600">← กลับหน้าหลัก</button>
+        </header>
+
+        <div class="glass p-8 mb-10 flex flex-col items-center">
+            <div class="heart-upload mb-4 shadow-lg group">
+                <span class="text-3xl group-hover:animate-bounce">➕</span>
+            </div>
+            <p class="text-sm font-bold text-sky-400 mb-6">คลิกหัวใจเพื่อเพิ่มรูปใหม่</p>
+            
+            <div class="w-full max-w-sm space-y-4">
+                <input type="text" id="imgUrl" placeholder="วางลิ้งก์รูปภาพที่นี่..." class="w-full p-3 rounded-2xl border-2 border-sky-100 focus:border-sky-400 outline-none transition-all">
+                <button onclick="addCharacter()" class="w-full py-3 bg-sky-500 text-white rounded-2xl font-bold shadow-lg hover:bg-sky-600 transition-all">บันทึกตัวละครลงเว็บ</button>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-6">รูปที่แสดงอยู่ตอนนี้</h2>
+        <div id="charList" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="relative group" id="char-1">
+                <div class="w-full aspect-square rounded-3xl overflow-hidden border-4 border-white shadow-md">
+                    <img src="https://via.placeholder.com/200" class="w-full h-full object-cover">
+                </div>
+                <button onclick="removeChar('char-1')" class="absolute -top-2 -right-2 w-8 h-8 bg-white text-red-400 rounded-full shadow-lg flex items-center justify-center font-bold opacity-0 group-hover:opacity-100 transition-all">×</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ฟังก์ชันจำลองการเพิ่มรูป
+        function addCharacter() {
+            const url = document.getElementById('imgUrl').value;
+            if(!url) return alert('ใส่ลิ้งก์รูปก่อนน้า');
+            
+            const list = document.getElementById('charList');
+            const id = 'char-' + Date.now();
+            const newItem = `
+                <div class="relative group" id="${id}">
+                    <div class="w-full aspect-square rounded-3xl overflow-hidden border-4 border-white shadow-md">
+                        <img src="${url}" class="w-full h-full object-cover">
+                    </div>
+                    <button onclick="removeChar('${id}')" class="absolute -top-2 -right-2 w-8 h-8 bg-white text-red-400 rounded-full shadow-lg flex items-center justify-center font-bold opacity-0 group-hover:opacity-100 transition-all">×</button>
+                </div>
+            `;
+            list.insertAdjacentHTML('afterbegin', newItem);
+            document.getElementById('imgUrl').value = '';
+        }
+
+        // ฟังก์ชันลบรูปพร้อมลูกเล่นสลายตัว
+        function removeChar(id) {
+            const el = document.getElementById(id);
+            el.classList.add('fade-bubble');
+            setTimeout(() => el.remove(), 700);
+        }
+    </script>
+</body>
+</html>
